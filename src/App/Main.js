@@ -71,7 +71,10 @@ export default function Main() {
   const viewMarket = async () => {
     try {
       setCheckingMarket(true);
-      const result = await apiCall('market/list/executed?market=DIST/NXS');
+      const params = {
+        market: 'DIST/NXS',
+      }
+      const result = await apiCall('market/list/executed', params);
       showSuccessDialog({
         message: 'DIST/NXS Market',
         note: JSON.stringify(result, null, 2),
@@ -89,7 +92,7 @@ export default function Main() {
   return (
     <Panel title="Testing Module" icon={{ url: 'react.svg', id: 'icon' }}>
       <div className="text-center">
-        Check out the{' '}
+        Check out{' '}
         <Button
           skin="hyperlink"
           as="a"
@@ -196,7 +199,7 @@ export default function Main() {
           </p>
           <Button onClick={viewMetrics} disabled={checkingMetrics}>
             View blockchain metrics
-          </Button>
+          </Button>{' '}
           <Button onClick={viewMarket} disabled={checkingMarket}>
             View DIST/NXS transactions
           </Button>
