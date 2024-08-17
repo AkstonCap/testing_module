@@ -2,7 +2,8 @@ import path from 'path';
 import { webpackAliases } from 'nexus-module';
 
 export default {
-  mode: process.env.NODE_ENV,
+  //mode: process.env.NODE_ENV,
+  mode: 'development',
   devtool: 'source-map',
   entry: './src/index.js',
   output: {

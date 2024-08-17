@@ -67,11 +67,29 @@ export default function Main() {
       setCheckingMetrics(false);
     }
   };
+  const [checkingMarket, setCheckingMarket] = useState(false);
+  const viewMarket = async () => {
+    try {
+      setCheckingMarket(true);
+      const result = await apiCall('market/list/executed?market=DIST/NXS');
+      showSuccessDialog({
+        message: 'DIST/NXS Market',
+        note: JSON.stringify(result, null, 2),
+      });
+    } catch (error) {
+      showErrorDialog({
+        message: 'Cannot get market data',
+        note: error?.message || 'Unknown error',
+      });
+    } finally {
+      setCheckingMarket(false);
+    }
+  };
 
   return (
-    <Panel title="React Redux Module" icon={{ url: 'react.svg', id: 'icon' }}>
+    <Panel title="Testing Module" icon={{ url: 'react.svg', id: 'icon' }}>
       <div className="text-center">
-        Check out{' '}
+        Check out the{' '}
         <Button
           skin="hyperlink"
           as="a"
@@ -178,6 +196,9 @@ export default function Main() {
           </p>
           <Button onClick={viewMetrics} disabled={checkingMetrics}>
             View blockchain metrics
+          </Button>
+          <Button onClick={viewMarket} disabled={checkingMarket}>
+            View DIST/NXS transactions
           </Button>
         </FieldSet>
       </div>
