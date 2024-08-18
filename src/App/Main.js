@@ -103,6 +103,34 @@ export default function Main() {
         for documentation and API reference.
       </div>
 
+      <div className="DEX">
+        <FieldSet legend="Nexus DEX">
+          <DemoTextField
+            value={inputValue}
+            onChange={handleChange}
+            placeholder="Type anything here"
+          />
+          <p>
+            {' '}
+          </p>
+          <Button onClick={viewMarket} disabled={checkingMarket}>
+            View DIST/NXS transactions
+          </Button>{' '}
+          <p>
+            {' '}
+          </p>
+            {' '}
+          <p>
+            The Nexus DEX is a decentralized exchange built into the Nexus
+            Wallet. It allows users to trade Nexus (NXS) and other assets
+            directly from their wallets.
+          </p>
+          <p>
+            {' '}
+          </p>
+        </FieldSet>
+      </div>
+
       <div className="mt2 flex center">
         <FieldSet legend="Module storage">
           <p>
