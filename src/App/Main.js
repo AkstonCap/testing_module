@@ -122,6 +122,14 @@ export default function Main() {
             utility function. Try switching it and restart your wallet to see if
             the switch state is retained.
           </p>
+          <DemoTextField
+            value={inputValue}
+            onChange={handleChange}
+            placeholder="Type anything here"
+          />
+          <Button onClick={viewMarket} disabled={checkingMarket}>
+            View DIST/NXS transactions
+          </Button>{' '}
           <Tooltip.Trigger
             position="right"
             tooltip="Click me then restart wallet"
@@ -200,9 +208,6 @@ export default function Main() {
           <Button onClick={viewMetrics} disabled={checkingMetrics}>
             View blockchain metrics
           </Button>{' '}
-          <Button onClick={viewMarket} disabled={checkingMarket}>
-            View DIST/NXS transactions
-          </Button>
         </FieldSet>
       </div>
     </Panel>
