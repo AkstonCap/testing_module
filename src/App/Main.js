@@ -92,7 +92,7 @@ export default function Main() {
   return (
     <Panel title="Testing Module" icon={{ url: 'react.svg', id: 'icon' }}>
       <div className="text-center">
-        Check out{' '}
+        Check out the{' '}
         <Button
           skin="hyperlink"
           as="a"

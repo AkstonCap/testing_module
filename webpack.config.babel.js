@@ -28,4 +28,5 @@ export default {
   resolve: {
     alias: webpackAliases,
   },
+  plugins: [], // Ensure plugins is an array
 };
