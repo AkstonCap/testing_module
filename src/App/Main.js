@@ -15,41 +15,26 @@ import {
 } from 'nexus-module';
 
 import {
-  showConnections,
-  hideConnections,
   updateInput,
 } from 'actions/actionCreators';
+import { listMarket } from 'actions/listMarket';
 
 const DemoTextField = styled(TextField)({
   maxWidth: 400,
 });
 
-export default function Main() {
-  const coreInfo = useSelector((state) => state.nexus.coreInfo);
-  const userStatus = useSelector((state) => state.nexus.userStatus);
-  const showingConnections = useSelector(
-    (state) => state.settings.showingConnections
-  );
-  const inputValue = useSelector((state) => state.ui.inputValue);
-  const dispatch = useDispatch();
-  const confirmToggle = async () => {
-    const question = showingConnections
-      ? 'Hide number of connections?'
-      : 'Show number of connections?';
+const DEFAULT_MARKET_PAIR = 'DIST/NXS';
 
-    const agreed = await confirm({ question });
-    if (agreed) {
-      if (showingConnections) {
-        dispatch(hideConnections());
-      } else {
-        dispatch(showConnections());
-      }
-    }
-  };
+export default function Main() {
+  const inputMarket = useSelector((state) => state.ui.inputValue);
+  const dispatch = useDispatch();
   const handleChange = (e) => {
     dispatch(updateInput(e.target.value));
   };
+  
   const [checkingMetrics, setCheckingMetrics] = useState(false);
+  const [lastPrice, setLastPrice] = useState('N/A');
+
   const viewMetrics = async () => {
     try {
       setCheckingMetrics(true);
@@ -67,21 +52,56 @@ export default function Main() {
       setCheckingMetrics(false);
     }
   };
+  
   const [checkingMarket, setCheckingMarket] = useState(false);
-  const viewMarket = async () => {
+  
+  const viewMarket = async (marketPair = 'DIST/NXS', path, numOfRes = 10, sort = 'time', filter = '1d') => {
     try {
       setCheckingMarket(true);
       const params = {
-        market: 'DIST/NXS',
+        market: marketPair,
       }
-      const result = await apiCall('market/list/executed', params);
+      const result = await apiCall('market/list/' + path, params);
+      
+      const now = Date.now();
+      const yesterday = now - 24 * 60 * 60 * 1000;
+      const lastWeek = now - 7 * 24 * 60 * 60 * 1000;
+      const lastMonth = now - 30 * 24 * 60 * 60 * 1000;
+      const lastYear = now - 365 * 24 * 60 * 60 * 1000;
+
+      const filteredResult = result.filter((item) => { 
+        const itemTime = new Date(item.timestamp).getTime();
+        if (filter === '1d') {
+          return itemTime > yesterday;
+        } else if (filter === '1w') {
+          return itemTime > lastWeek;
+        } else if (filter === '1m') {
+          return itemTime > lastMonth;
+        } else if (filter === '1y') {
+          return itemTime > lastYear;
+        }
+        return true;  // Default case if no filter is applied
+      });
+
+      const sortedResult = filteredResult.sort((a, b) => {
+        if (sort === 'time') {
+          return new Date(b.timestamp) - new Date(a.timestamp);
+        } else if (sort === 'price') {
+          return b.price - a.price;
+        } else if (sort === 'NXSamount') {
+          return b.amount - a.amount;
+        } else {
+          return 0;  // Default case if no sort is applied
+        }
+      }).slice(0, numOfRes);
+
       showSuccessDialog({
-        message: 'DIST/NXS Market',
-        note: JSON.stringify(result, null, 2),
+        message: marketPair + ' Market ' + path,
+        note: JSON.stringify(sortedResult, null, 2),
       });
     } catch (error) {
       showErrorDialog({
-        message: 'Cannot get market data',
+        message: 'Cannot get market data for the chosen parameters',
         note: error?.message || 'Unknown error',
       });
     } finally {
@@ -89,134 +109,47 @@ export default function Main() {
     }
   };
 
+  useEffect(() => {
+    const fetchLastPrice = async () => {
+        const result = await listMarket(inputMarket, 'executed', 1, 'time', '1y');
+        setLastPrice(result[0]?.price || 'N/A');
+    };
+    fetchLastPrice();
+  }, [inputMarket]);
+
   return (
-    <Panel title="Testing Module" icon={{ url: 'react.svg', id: 'icon' }}>
+    <Panel title="DEX Module" icon={{ url: 'react.svg', id: 'icon' }}>
       <div className="text-center">
-        Check out the{' '}
-        <Button
-          skin="hyperlink"
-          as="a"
-          href="https://github.com/Nexusoft/NexusInterface/tree/master/docs/Modules"
-        >
-          Developer's guide to Nexus Wallet Module
-        </Button>{' '}
-        for documentation and API reference.
+        <DemoTextField
+          value={inputMarket}
+          onChange={handleChange}
+          placeholder="Type market pair here"
+        />
       </div>
 
       <div className="DEX">
         <FieldSet legend="Nexus DEX">
-          <DemoTextField
-            value={inputValue}
-            onChange={handleChange}
-            placeholder="Type anything here"
-          />
-          <p>
-            {' '}
-          </p>
-          <Button onClick={viewMarket} disabled={checkingMarket}>
-            View DIST/NXS transactions
-          </Button>{' '}
-          <p>
-            {' '}
-          </p>
-            {' '}
           <p>
             The Nexus DEX is a decentralized exchange built into the Nexus
             Wallet. It allows users to trade Nexus (NXS) and other assets
             directly from their wallets.
           </p>
           <p>
+            <Button onClick={viewMarket(inputMarket, 'executed', 10, 'time', '1y')} disabled={checkingMarket}>
+              View ${inputMarket || DEFAULT_MARKET_PAIR} transactions
+            </Button>{' '}
+            
+            <Button onClick={viewMarket(inputMarket, 'order', 10, 'time', '1y')} disabled={checkingMarket}>
+              View ${inputMarket || DEFAULT_MARKET_PAIR} orders
+            </Button>{' '}
+          </p>
+          <p>
+            Last Price: {lastPrice}
             {' '}
           </p>
-        </FieldSet>
-      </div>
-
-      <div className="mt2 flex center">
-        <FieldSet legend="Module storage">
           <p>
-            <strong>Module storage</strong> is a feature that allows modules to
-            save data (module's settings for example) into a file so that it
-            won't be lost when user closes their wallet.
+            {' '}
           </p>
-          <p>
-            The on/off state of the switch below will be saved to a file using{' '}
-            <Button
-              skin="hyperlink"
-              as="a"
-              href="https://github.com/Nexusoft/NexusInterface/blob/master/docs/Modules/nexus-global-variable.md#updatestorage"
-            >
-              updateStorage
-            </Button>{' '}
-            utility function. Try switching it and restart your wallet to see if
-            the switch state is retained.
-          </p>
-          <DemoTextField
-            value={inputValue}
-            onChange={handleChange}
-            placeholder="Type anything here"
-          />
-          <Button onClick={viewMarket} disabled={checkingMarket}>
-            View DIST/NXS transactions
-          </Button>{' '}
-          <Tooltip.Trigger
-            position="right"
-            tooltip="Click me then restart wallet"
-          >
-            <Switch checked={showingConnections} onChange={confirmToggle} />
-          </Tooltip.Trigger>
-        </FieldSet>
-      </div>
-
-      <div className="mt2">
-        <FieldSet legend="Module state">
-          <p>
-            Since your module is embedded inside a &lt;webview&gt; tag, normally
-            when user navigates away from your module page, the &lt;Webview&gt;
-            will be unmounted and all your module state will be lost.{' '}
-            <strong>Module state</strong> is a feature that allows modules to
-            save temporary state data on the base wallet so that it won't be
-            lost when user navigates away from the module.
-          </p>
-          <p>
-            The content of the textbox below will be saved to base wallet's
-            state using{' '}
-            <Button
-              skin="hyperlink"
-              as="a"
-              href="https://github.com/Nexusoft/NexusInterface/blob/master/docs/Modules/nexus-global-variable.md#updatestate"
-            >
-              updateState
-            </Button>{' '}
-            utility function. Try filling it out then switch to Overview and
-            switch back to see if the content is still there.
-          </p>
-          <DemoTextField
-            value={inputValue}
-            onChange={handleChange}
-            placeholder="Type anything here"
-          />
-        </FieldSet>
-      </div>
-
-      <div className="mt2 flex center">
-        <FieldSet legend="Live updated data">
-          <p>
-            Core information, user status, local address book, wallet theme and
-            settings will be fed into your module when your module is
-            initialized and when those data are changed.
-          </p>
-          {!!showingConnections && (
-            <div className="mt1">
-              Core connections:{' '}
-              <strong>
-                {coreInfo ? coreInfo.connections : 'Not connected'}
-              </strong>
-            </div>
-          )}
-          <div>
-            User status:{' '}
-            <strong>{userStatus ? 'Logged in' : 'Not logged in'}</strong>
-          </div>
         </FieldSet>
       </div>
 
