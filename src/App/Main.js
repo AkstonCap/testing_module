@@ -14,9 +14,7 @@ import {
   showSuccessDialog,
 } from 'nexus-module';
 
-import {
-  updateInput,
-} from 'actions/actionCreators';
+import { updateInput } from 'actions/actionCreators';
 import { listMarket } from 'actions/listMarket';
 
 const DemoTextField = styled(TextField)({
@@ -34,6 +32,7 @@ export default function Main() {
   
   const [checkingMetrics, setCheckingMetrics] = useState(false);
   const [lastPrice, setLastPrice] = useState('N/A');
+  const [checkingMarket, setCheckingMarket] = useState(false);
 
   const viewMetrics = async () => {
     try {
@@ -52,8 +51,6 @@ export default function Main() {
       setCheckingMetrics(false);
     }
   };
-  
-  const [checkingMarket, setCheckingMarket] = useState(false);
   
   const viewMarket = async (marketPair = 'DIST/NXS', path, numOfRes = 10, sort = 'time', filter = '1d') => {
     try {
@@ -111,7 +108,8 @@ export default function Main() {
 
   useEffect(() => {
     const fetchLastPrice = async () => {
-        const result = await listMarket(inputMarket, 'executed', 1, 'time', '1y');
+        const market = inputMarket || DEFAULT_MARKET_PAIR;
+        const result = await listMarket(market, 'executed', 1, 'time', '1y');
         setLastPrice(result[0]?.price || 'N/A');
     };
     fetchLastPrice();
@@ -135,11 +133,11 @@ export default function Main() {
             directly from their wallets.
           </p>
           <p>
-            <Button onClick={viewMarket(inputMarket, 'executed', 10, 'time', '1y')} disabled={checkingMarket}>
+            <Button onClick={() => viewMarket(inputMarket, 'executed', 10, 'time', '1y')} disabled={checkingMarket}>
               View ${inputMarket || DEFAULT_MARKET_PAIR} transactions
             </Button>{' '}
             
-            <Button onClick={viewMarket(inputMarket, 'order', 10, 'time', '1y')} disabled={checkingMarket}>
+            <Button onClick={() => viewMarket(inputMarket, 'order', 10, 'time', '1y')} disabled={checkingMarket}>
               View ${inputMarket || DEFAULT_MARKET_PAIR} orders
             </Button>{' '}
           </p>
