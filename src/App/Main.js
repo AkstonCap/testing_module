@@ -55,9 +55,7 @@ export default function Main() {
   const viewMarket = async (marketPair = 'DIST/NXS', path, numOfRes = 10, sort = 'time', filter = '1d') => {
     try {
       setCheckingMarket(true);
-      const params = {
-        market: marketPair,
-      }
+      const params = { market: marketPair }
       const result = await apiCall('market/list/' + path, params);
       
       const now = Date.now();
@@ -108,9 +106,16 @@ export default function Main() {
 
   useEffect(() => {
     const fetchLastPrice = async () => {
-        const market = inputMarket || DEFAULT_MARKET_PAIR;
-        const result = await listMarket(market, 'executed', 1, 'time', '1y');
+      try {
+        const pair = inputMarket || DEFAULT_MARKET_PAIR;
+        const result = await listMarket(pair, 'executed', 1, 'time', '1y');
         setLastPrice(result[0]?.price || 'N/A');
+      } catch (error) {
+        showErrorDialog({
+          message: 'Cannot get last price',
+          note: error?.message || 'Unknown error',
+        });
+      }
     };
     fetchLastPrice();
   }, [inputMarket]);
