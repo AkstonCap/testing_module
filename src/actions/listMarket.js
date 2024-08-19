@@ -35,8 +35,8 @@ export const listMarket = async (marketPair = 'DIST/NXS', path, numOfRes = 10, s
       return new Date(b.timestamp) - new Date(a.timestamp);
     } else if (sort === 'price') {
       return b.price - a.price;
-    } else if (sort === 'NXSamount') {
-      return b.amount - a.amount;
+    //} else if (sort === 'NXSamount') {
+      //return b.amount - a.amount;
     } else {
       return 0;  // Default case if no sort is applied
     }
