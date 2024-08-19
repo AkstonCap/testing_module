@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -16,6 +16,7 @@ import {
 
 import { updateInput } from 'actions/actionCreators';
 import { listMarket } from 'actions/listMarket';
+import { RefreshButton } from './RefreshButton';
 
 const DemoTextField = styled(TextField)({
   maxWidth: 400,
@@ -128,6 +129,7 @@ export default function Main() {
           onChange={handleChange}
           placeholder="Type market pair here"
         />
+        <RefreshButton onRefresh={fetchLastPrice} /> {/* Add RefreshButton */}
       </div>
 
       <div className="DEX">
