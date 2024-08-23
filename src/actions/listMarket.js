@@ -1,7 +1,16 @@
 import * as TYPE from './types';
 import { apiCall } from 'nexus-module';
 
-export const listMarket = async (marketPair = 'DIST/NXS', path, numOfRes = 10, sort = 'time', filter = '1d') => {
+export const DEFAULT_MARKET_PAIR = 'DIST/NXS';
+
+export const listMarket = async (
+  marketPair = DEFAULT_MARKET_PAIR, 
+  path,  
+  sort = 'time',
+  asc_desc = 'desc', 
+  filter = 'all',
+  numOfRes = 0
+) => {
   try {
     const params = {
       market: marketPair
@@ -20,6 +29,7 @@ export const listMarket = async (marketPair = 'DIST/NXS', path, numOfRes = 10, s
       '1w': now - 7 * 24 * 60 * 60 * 1000,
       '1m': now - 30 * 24 * 60 * 60 * 1000,
       '1y': now - 365 * 24 * 60 * 60 * 1000,
+      'all': 0,
     };
 
     const filteredResult = result.filter((item) => { 
@@ -31,8 +41,19 @@ export const listMarket = async (marketPair = 'DIST/NXS', path, numOfRes = 10, s
       'time': (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
       'price': (a, b) => b.price - a.price,
     };
+    if (asc_desc === 'asc') {
+      sortFunctions.price = (a, b) => a.price - b.price;
+      sortFunctions.time = (a, b) => new Date(a.timestamp) - new Date(b.timestamp);
+    }
 
-    const sortedResult = filteredResult.sort(sortFunctions[sort]).slice(0, numOfRes);
+    let sortedResult;
+    if (numOfRes > 0) {
+      sortedResult = filteredResult.sort(sortFunctions[sort]).slice(0, numOfRes);
+    } else if (numOfRes === 0) {
+      sortedResult = filteredResult.sort(sortFunctions[sort]);
+    } else {
+      throw new Error('Invalid number of results');
+    }
 
     return sortedResult;
   } catch (error) {

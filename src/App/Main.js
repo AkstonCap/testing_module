@@ -19,6 +19,7 @@ import { listMarket } from 'actions/listMarket';
 import RefreshButton from './RefreshButton';
 import { viewMarket } from 'actions/viewMarket';
 import { fetchLastPrice } from 'actions/fetchLastPrice';
+import { fetchHighestBid, fetchLowestAsk } from 'actions/fetchFirstOrders';
 
 const DemoTextField = styled(TextField)({
   maxWidth: 400,
@@ -40,7 +41,17 @@ export default function Main() {
   }, [dispatch]);
   
   const [lastPrice, setLastPrice] = useState('N/A');
+  const [highestBid, setHighestBid] = useState('N/A');
+  const [lowestAsk, setLowestAsk] = useState('N/A');
+  const [volume, setVolume] = useState('N/A');
   const [checkingMarket, setCheckingMarket] = useState(false);
+
+  const handleRefreshClick = () => {
+    fetchLastPrice(inputMarket, checkingMarket, 
+      setCheckingMarket, setLastPrice, showErrorDialog);
+    fetchHighestBid(inputMarket, setHighestBid, showErrorDialog);
+    fetchLowestAsk(inputMarket, setLowestAsk, showErrorDialog);
+  };
   
   return (
     <Panel title="${inputMarket || DEFAULT_MARKET_PAIR} Market" icon={{ url: 'react.svg', id: 'icon' }}>
@@ -51,17 +62,14 @@ export default function Main() {
             onChange={handleChange}
             placeholder="Type market pair here"
           />
-          <RefreshButton onClick={() => fetchLastPrice(inputMarket, checkingMarket, setCheckingMarket, setLastPrice, showErrorDialog)} disabled={checkingMarket} />
+          <RefreshButton onClick={
+            handleRefreshClick
+            } disabled={checkingMarket} />
         </ButtonContainer>
       </div>
 
       <div className="DEX">
         <FieldSet legend="Nexus DEX">
-          <p>
-            The Nexus DEX is a decentralized exchange built into the Nexus
-            Wallet. It allows users to trade Nexus (NXS) and other assets
-            directly from their wallets.
-          </p>
           <p>
             <Button onClick={() => viewMarket(inputMarket, 'executed', 10, 'time', '1y')} disabled={checkingMarket}>
               View {inputMarket || DEFAULT_MARKET_PAIR} transactions
@@ -73,6 +81,12 @@ export default function Main() {
           </p>
           <p>
             Last Price: {lastPrice}
+            {' '}
+            Bid: {highestBid}
+            {' '}
+            Ask: {lowestAsk}
+            {' '}
+            Volume: {volume}
             {' '}
           </p>
           <p>
