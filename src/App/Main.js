@@ -16,10 +16,17 @@ import {
 
 import { updateInput } from 'actions/actionCreators';
 import { listMarket } from 'actions/listMarket';
+import RefreshButton from './RefreshButton';
 
 const DemoTextField = styled(TextField)({
   maxWidth: 400,
 });
+
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Adjust the gap as needed */
+`;
 
 const DEFAULT_MARKET_PAIR = 'DIST/NXS';
 
@@ -74,30 +81,34 @@ export default function Main() {
     }
   };
 
-  useEffect(() => {
-    const fetchLastPrice = async () => {
-      try {
-        const pair = inputMarket || DEFAULT_MARKET_PAIR;
-        const result = await listMarket(pair, 'executed', 1, 'time', '1y');
-        setLastPrice(result[0]?.price || 'N/A');
-      } catch (error) {
-        showErrorDialog({
-          message: 'Cannot get last price',
-          note: error?.message || 'Unknown error',
-        });
-      }
-    };
-    fetchLastPrice();
-  }, [inputMarket]);
+  const fetchLastPrice = async () => {
+    if (checkingMarket) return;
+    try {
+      setCheckingMarket(true);
+      const pair = inputMarket || DEFAULT_MARKET_PAIR;
+      const result = await listMarket(pair, 'executed', 1, 'time', '1y');
+      setLastPrice(result[0]?.price || 'N/A');
+    } catch (error) {
+      showErrorDialog({
+        message: 'Cannot get last price',
+        note: error?.message || 'Unknown error',
+      });
+    } finally {
+      setCheckingMarket(false);
+    }
+  };
 
   return (
     <Panel title="DEX Module" icon={{ url: 'react.svg', id: 'icon' }}>
       <div className="text-center">
-        <DemoTextField
-          value={inputMarket}
-          onChange={handleChange}
-          placeholder="Type market pair here"
-        />
+        <ButtonContainer>
+          <DemoTextField
+            value={inputMarket}
+            onChange={handleChange}
+            placeholder="Type market pair here"
+          />
+          <RefreshButton onClick={fetchLastPrice} disabled={checkingMarket} />
+        </ButtonContainer>
       </div>
 
       <div className="DEX">
