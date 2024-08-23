@@ -20,6 +20,7 @@ import RefreshButton from './RefreshButton';
 import { viewMarket } from 'actions/viewMarket';
 import { fetchLastPrice } from 'actions/fetchLastPrice';
 import { fetchHighestBid, fetchLowestAsk } from 'actions/fetchFirstOrders';
+import { fetchVolume } from 'actions/fetchVolume';
 
 const DemoTextField = styled(TextField)({
   maxWidth: 400,
@@ -35,6 +36,8 @@ const DEFAULT_MARKET_PAIR = 'DIST/NXS';
 
 export default function Main() {
   const inputMarket = useSelector((state) => state.ui.inputValue);
+  const inputBaseToken = useSelector((state) => state.ui.inputValue);
+  const inputOrderToken = useSelector((state) => state.ui.inputValue);
   const dispatch = useDispatch();
   const handleChange = useCallback((e) => {
     dispatch(updateInput(e.target.value));
@@ -43,7 +46,8 @@ export default function Main() {
   const [lastPrice, setLastPrice] = useState('N/A');
   const [highestBid, setHighestBid] = useState('N/A');
   const [lowestAsk, setLowestAsk] = useState('N/A');
-  const [volume, setVolume] = useState('N/A');
+  const [orderTokenVolume, setOrderTokenVolume] = useState('N/A');
+  const [baseTokenVolume, setBaseTokenVolume] = useState('N/A');
   const [checkingMarket, setCheckingMarket] = useState(false);
 
   const handleRefreshClick = () => {
@@ -51,6 +55,8 @@ export default function Main() {
       setCheckingMarket, setLastPrice, showErrorDialog);
     fetchHighestBid(inputMarket, setHighestBid, showErrorDialog);
     fetchLowestAsk(inputMarket, setLowestAsk, showErrorDialog);
+    fetchVolume(inputMarket, checkingMarket, setCheckingMarket, 
+      setOrderTokenVolume, setBaseTokenVolume, showErrorDialog, '1y');
   };
   
   return (
@@ -60,7 +66,18 @@ export default function Main() {
           <DemoTextField
             value={inputMarket}
             onChange={handleChange}
-            placeholder="Type market pair here"
+            placeholder="Type order token here"
+          />
+          <DemoTextField
+            value={inputOrderToken}
+            onChange={handleChange}
+            placeholder="Type order token here"
+          />
+          /
+          <DemoTextField
+            value={inputBaseToken}
+            onChange={handleChange}
+            placeholder="Type base token here"
           />
           <RefreshButton onClick={
             handleRefreshClick
@@ -80,13 +97,15 @@ export default function Main() {
             </Button>{' '}
           </p>
           <p>
-            Last Price: {lastPrice}
+            Last Price: {lastPrice} {inputBaseToken}
             {' '}
-            Bid: {highestBid}
+            Bid: {highestBid} {inputBaseToken}
             {' '}
-            Ask: {lowestAsk}
+            Ask: {lowestAsk} {inputBaseToken}
             {' '}
-            Volume: {volume}
+            1yr Volume: {baseTokenVolume} {inputBaseToken}
+            {' '}
+            1yr Volume: {orderTokenVolume} {inputOrderToken}
             {' '}
           </p>
           <p>
