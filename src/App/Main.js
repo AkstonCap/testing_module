@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -16,7 +16,6 @@ import {
 
 import { updateInput } from 'actions/actionCreators';
 import { listMarket } from 'actions/listMarket';
-import { RefreshButton } from './RefreshButton';
 
 const DemoTextField = styled(TextField)({
   maxWidth: 400,
@@ -27,31 +26,12 @@ const DEFAULT_MARKET_PAIR = 'DIST/NXS';
 export default function Main() {
   const inputMarket = useSelector((state) => state.ui.inputValue);
   const dispatch = useDispatch();
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     dispatch(updateInput(e.target.value));
-  };
+  }, [dispatch]);
   
-  const [checkingMetrics, setCheckingMetrics] = useState(false);
   const [lastPrice, setLastPrice] = useState('N/A');
   const [checkingMarket, setCheckingMarket] = useState(false);
-
-  const viewMetrics = async () => {
-    try {
-      setCheckingMetrics(true);
-      const result = await apiCall('system/get/metrics');
-      showSuccessDialog({
-        message: 'Tritium Metrics',
-        note: JSON.stringify(result, null, 2),
-      });
-    } catch (error) {
-      showErrorDialog({
-        message: 'Cannot get metrics',
-        note: error?.message || 'Unknown error',
-      });
-    } finally {
-      setCheckingMetrics(false);
-    }
-  };
   
   const viewMarket = async (marketPair = 'DIST/NXS', path, numOfRes = 10, sort = 'time', filter = '1d') => {
     try {
@@ -60,39 +40,28 @@ export default function Main() {
       const result = await apiCall('market/list/' + path, params);
       
       const now = Date.now();
-      const yesterday = now - 24 * 60 * 60 * 1000;
-      const lastWeek = now - 7 * 24 * 60 * 60 * 1000;
-      const lastMonth = now - 30 * 24 * 60 * 60 * 1000;
-      const lastYear = now - 365 * 24 * 60 * 60 * 1000;
+      const timeFilters = {
+        '1d': now - 24 * 60 * 60 * 1000,
+        '1w': now - 7 * 24 * 60 * 60 * 1000,
+        '1m': now - 30 * 24 * 60 * 60 * 1000,
+        '1y': now - 365 * 24 * 60 * 60 * 1000,
+      };
 
       const filteredResult = result.filter((item) => { 
         const itemTime = new Date(item.timestamp).getTime();
-        if (filter === '1d') {
-          return itemTime > yesterday;
-        } else if (filter === '1w') {
-          return itemTime > lastWeek;
-        } else if (filter === '1m') {
-          return itemTime > lastMonth;
-        } else if (filter === '1y') {
-          return itemTime > lastYear;
-        }
-        return true;  // Default case if no filter is applied
+        return itemTime > (timeFilters[filter] || 0);
       });
 
-      const sortedResult = filteredResult.sort((a, b) => {
-        if (sort === 'time') {
-          return new Date(b.timestamp) - new Date(a.timestamp);
-        } else if (sort === 'price') {
-          return b.price - a.price;
-        } else if (sort === 'NXSamount') {
-          return b.amount - a.amount;
-        } else {
-          return 0;  // Default case if no sort is applied
-        }
-      }).slice(0, numOfRes);
+      const sortFunctions = {
+        'time': (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
+        'price': (a, b) => b.price - a.price,
+        'NXSamount': (a, b) => b.amount - a.amount,
+      };
+
+      const sortedResult = filteredResult.sort(sortFunctions[sort]).slice(0, numOfRes);
 
       showSuccessDialog({
-        message: marketPair + ' Market ' + path,
+        message: `${marketPair} Market ${path}`,
         note: JSON.stringify(sortedResult, null, 2),
       });
     } catch (error) {
@@ -129,7 +98,6 @@ export default function Main() {
           onChange={handleChange}
           placeholder="Type market pair here"
         />
-        <RefreshButton onRefresh={fetchLastPrice} /> {/* Add RefreshButton */}
       </div>
 
       <div className="DEX">
@@ -155,25 +123,6 @@ export default function Main() {
           <p>
             {' '}
           </p>
-        </FieldSet>
-      </div>
-
-      <div className="mt2">
-        <FieldSet legend="API calls">
-          <p>
-            You can make API calls from your module to the Nexus Core using{' '}
-            <Button
-              skin="hyperlink"
-              as="a"
-              href="https://github.com/Nexusoft/NexusInterface/blob/master/docs/Modules/nexus-global-variable.md#apicall"
-            >
-              apiCall
-            </Button>{' '}
-            utility function. Click the button below to view blockchain metrics.
-          </p>
-          <Button onClick={viewMetrics} disabled={checkingMetrics}>
-            View blockchain metrics
-          </Button>{' '}
         </FieldSet>
       </div>
     </Panel>
