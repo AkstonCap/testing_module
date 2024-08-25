@@ -69,7 +69,14 @@ export default function Main() {
     fetchVolume(inputMarket, checkingMarket, setCheckingMarket, 
       setOrderTokenVolume, setBaseTokenVolume, showErrorDialog, '1y');
   };
-  
+
+  const gridStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gridTemplateRows: 'repeat(2, auto)',
+    gap: '10px' // Adjust the gap as needed
+  };
+
   return (
     <Panel title={`${inputMarket} Market`} icon={{ url: 'react.svg', id: 'icon' }}>
       <div className="text-center">
@@ -107,18 +114,18 @@ export default function Main() {
               View {inputMarket || DEFAULT_MARKET_PAIR} orders
             </Button>{' '}
           </p>
-          <p>
-            Last Price: {lastPrice} {inputBaseToken}
-            {' '}
-            Bid: {highestBid} {inputBaseToken}
-            {' '}
-            Ask: {lowestAsk} {inputBaseToken}
-            {' '}
-            1yr Volume: {baseTokenVolume} {inputBaseToken}
-            {' '}
-            1yr Volume: {orderTokenVolume} {inputOrderToken}
-            {' '}
-          </p>
+          <div style={gridStyle}>
+            <p>Last Price: {lastPrice} {inputBaseToken}</p>
+            
+            <p>Bid: {highestBid} {inputBaseToken}</p>
+            
+            <p>Ask: {lowestAsk} {inputBaseToken}</p>
+            
+            <p>1yr Volume: {baseTokenVolume} {inputBaseToken}</p>
+           
+            <p>1yr Volume: {orderTokenVolume} {inputOrderToken}</p>
+           
+          </div>
           <p>
             {' '}
           </p>

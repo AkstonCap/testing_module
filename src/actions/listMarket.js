@@ -21,9 +21,9 @@ export const listMarket = async (
 
     console.log('API call result:', result); // Add this line to log the result
 
-    if (!Array.isArray(result)) {
-      throw new Error('API call did not return an array');
-    }
+    // if (!Array.isArray(result)) {
+    //   throw new Error('API call did not return an array');
+    // }
 
     const now = Date.now();
     const timeFilters = {
