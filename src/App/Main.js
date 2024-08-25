@@ -35,13 +35,24 @@ const ButtonContainer = styled.div`
 const DEFAULT_MARKET_PAIR = 'DIST/NXS';
 
 export default function Main() {
-  const inputMarket = useSelector((state) => state.ui.inputValue);
-  const inputBaseToken = useSelector((state) => state.ui.inputValue);
-  const inputOrderToken = useSelector((state) => state.ui.inputValue);
+  const { inputMarket, 
+    inputBaseToken, 
+    inputOrderToken 
+  } = useSelector((state) => ({ 
+    inputMarket: state.ui.inputValue,
+    inputBaseToken: state.ui.inputBaseToken,
+    inputOrderToken: state.ui.inputOrderToken
+  }));
   const dispatch = useDispatch();
   const handleChange = useCallback((e) => {
     dispatch(updateInput(e.target.value));
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!inputMarket) {
+      dispatch(updateInput(DEFAULT_MARKET_PAIR));
+    }
+  }, [dispatch, inputMarket]);
   
   const [lastPrice, setLastPrice] = useState('N/A');
   const [highestBid, setHighestBid] = useState('N/A');
@@ -60,13 +71,13 @@ export default function Main() {
   };
   
   return (
-    <Panel title="${inputMarket || DEFAULT_MARKET_PAIR} Market" icon={{ url: 'react.svg', id: 'icon' }}>
+    <Panel title={`${inputMarket} Market`} icon={{ url: 'react.svg', id: 'icon' }}>
       <div className="text-center">
         <ButtonContainer>
           <DemoTextField
             value={inputMarket}
             onChange={handleChange}
-            placeholder="Type order token here"
+            placeholder="Type market pair here"
           />
           <DemoTextField
             value={inputOrderToken}

@@ -15,7 +15,9 @@ export const listMarket = async (
     const params = {
       market: marketPair
     };
-    const result = await apiCall('market/list/' + path, params);
+    const resultInit = await apiCall('market/list/' + path, params);
+    const result = await resultInit.json();
+    // const result = [...resultInit.bids, ...resultInit.asks]; // Add this line to combine bids and asks
 
     console.log('API call result:', result); // Add this line to log the result
 
