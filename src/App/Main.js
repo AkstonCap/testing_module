@@ -14,7 +14,7 @@ import {
   showSuccessDialog,
 } from 'nexus-module';
 
-import { updateInput } from 'actions/actionCreators';
+import { updateInputOrderToken, updateInputBaseToken } from 'actions/actionCreators';
 import { listMarket } from 'actions/listMarket';
 import RefreshButton from './RefreshButton';
 import { viewMarket } from 'actions/viewMarket';
@@ -39,30 +39,31 @@ const DEFAULT_ORDER_TOKEN = 'DIST';
 const DEFAULT_BASE_TOKEN = 'NXS';
 
 export default function Main() {
-  const { inputMarket, 
+  const { 
     inputBaseToken, 
     inputOrderToken 
-  } = useSelector((state) => ({ 
-    inputMarket: state.ui.inputValue,
+  } = useSelector((state) => ({
     inputBaseToken: state.ui.inputBaseToken,
     inputOrderToken: state.ui.inputOrderToken
   }));
   const dispatch = useDispatch();
   const handleChange = useCallback((e) => {
-    dispatch(updateInput(e.target.value));
+    const { name, value } = e.target;
+  if (name === 'orderToken') {
+    dispatch(updateInputOrderToken(value));
+  } else if (name === 'baseToken') {
+    dispatch(updateInputBaseToken(value));
+  }
   }, [dispatch]);
 
   useEffect(() => {
-    if (!inputMarket) {
-      dispatch(updateInput(DEFAULT_MARKET_PAIR));
-    }
     if (!inputOrderToken) {
-      dispatch(updateInput(DEFAULT_ORDER_TOKEN));
+      dispatch(updateInputOrderToken(DEFAULT_ORDER_TOKEN));
     }
     if (!inputBaseToken) {
-      dispatch(updateInput(DEFAULT_BASE_TOKEN));
+      dispatch(updateInputBaseToken(DEFAULT_BASE_TOKEN));
     }
-  }, [dispatch, inputMarket, inputOrderToken, inputBaseToken]);
+  }, [dispatch, inputOrderToken, inputBaseToken]);
   
   const [lastPrice, setLastPrice] = useState('N/A');
   const [highestBid, setHighestBid] = useState('N/A');
@@ -77,13 +78,13 @@ export default function Main() {
 
   const handleRefreshClick = () => {
     setMarketPair(inputOrderToken, inputBaseToken, setMarketPairState);
-    fetchLastPrice(inputMarket, checkingMarket, 
+    fetchLastPrice(marketPair, checkingMarket, 
       setCheckingMarket, setLastPrice, showErrorDialog);
-    fetchHighestBid(inputMarket, setHighestBid, showErrorDialog);
-    fetchLowestAsk(inputMarket, setLowestAsk, showErrorDialog);
-    fetchVolume(inputMarket, checkingMarket, setCheckingMarket, 
+    fetchHighestBid(marketPair, setHighestBid, showErrorDialog);
+    fetchLowestAsk(marketPair, setLowestAsk, showErrorDialog);
+    fetchVolume(marketPair, checkingMarket, setCheckingMarket, 
       setOrderTokenVolume, setBaseTokenVolume, showErrorDialog, '1y');
-    fetchOrderBook(inputMarket, checkingMarket, setCheckingMarket, 
+    fetchOrderBook(marketPair, checkingMarket, setCheckingMarket, 
       setOrderBook, setOrderBookBids, setOrderBookAsks, showErrorDialog);
   };
 
@@ -108,11 +109,6 @@ export default function Main() {
     <Panel title={"DEX Module"} icon={{ url: 'react.svg', id: 'icon' }}>
       <div className="text-center">
         <ButtonContainer>
-          <DemoTextField
-            value={inputMarket}
-            onChange={handleChange}
-            placeholder="Type market pair here"
-          />
           <DemoTextField
             value={inputOrderToken}
             onChange={handleChange}

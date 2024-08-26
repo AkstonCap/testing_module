@@ -13,6 +13,15 @@ export const updateInput = (inputValue) => ({
   payload: inputValue,
 });
 
+export const updateInputOrderToken = (inputOrderToken) => ({
+  type: TYPE.UPDATE_INPUT_ORDER_TOKEN,
+  payload: inputOrderToken,
+});
+
+export const updateInputBaseToken = (inputBaseToken) => ({
+  type: TYPE.UPDATE_INPUT_BASE_TOKEN,
+  payload: inputBaseToken,
+});
 
 export const setLastPrice = (price) => ({
   type: 'SET_LAST_PRICE', 
