@@ -17,20 +17,36 @@ export const viewMarket = async (
       const params = { 
         market: marketPair 
       }
-      const result = await apiCall('market/list/' + path, params);
-      
+
       const now = Date.now();
       const timeFilters = {
         '1d': now - 24 * 60 * 60 * 1000,
         '1w': now - 7 * 24 * 60 * 60 * 1000,
         '1m': now - 30 * 24 * 60 * 60 * 1000,
         '1y': now - 365 * 24 * 60 * 60 * 1000,
+        'all': 0,
       };
 
-      const filteredResult = result.filter((item) => { 
+      const filtering = {
+        where: {
+          timestamp: {
+            gt: timeFilters[filter] || 0,
+          },
+        },
+      }
+
+      const result = await apiCall('market/list/' + path, params, filtering);
+
+      // Check if result is a JSON string and parse it
+      if (typeof result === 'string') {
+        result = JSON.parse(result);
+      }
+
+      // Ensure result is an array before filtering
+      const filteredResult = Array.isArray(result) ? result.filter((item) => { 
         const itemTime = new Date(item.timestamp).getTime();
         return itemTime > (timeFilters[filter] || 0);
-      });
+      }) : [];
 
       const sortFunctions = {
         'time': (a, b) => new Date(b.timestamp) - new Date(a.timestamp),

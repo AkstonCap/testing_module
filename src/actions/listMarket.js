@@ -15,23 +15,6 @@ export const listMarket = async (
     const params = {
       market: marketPair
     };
-    const resultInit = await apiCall('market/list/' + path, params);
-    // const result = await resultInit.json();
-    
-    let result = [];
-    if (path === 'executed' || path === 'order') {
-      result = [...resultInit.bids, ...resultInit.asks]; // Add this line to combine bids and asks
-    } else if (path === 'bid') {
-      result = [...resultInit.bids ];
-    } else if (path === 'ask') {
-      result = [...resultInit.asks ];
-    }
-
-    console.log('API call result:', result); // Add this line to log the result
-
-    // if (!Array.isArray(result)) {
-    //   throw new Error('API call did not return an array');
-    // }
 
     const now = Date.now();
     const timeFilters = {
@@ -46,10 +29,35 @@ export const listMarket = async (
       throw new Error('Invalid filter value');
     }
 
-    const filteredResult = result.filter((item) => { 
+    const filtering = {
+      where: {
+        timestamp: {
+          gt: timeFilters[filter] || 0,
+        },
+      },
+    }
+
+    const resultInit = await apiCall('market/list/' + path, params, filtering);
+    // const result = await resultInit.json();
+    
+    let result = [];
+    if (path === 'executed' || path === 'order') {
+      result = [...resultInit.bids, ...resultInit.asks]; // Add this line to combine bids and asks
+    } else if (path === 'bid') {
+      result = [...resultInit.bids ];
+    } else if (path === 'ask') {
+      result = [...resultInit.asks ];
+    }
+
+    // Check if result is a JSON string and parse it
+    if (typeof result === 'string') {
+      result = JSON.parse(result);
+    }
+
+    const filteredResult = Array.isArray(result) ? result.filter((item) => { 
       const itemTime = new Date(item.timestamp).getTime();
       return itemTime > (timeFilters[filter] || 0);
-    });
+    }) : [];
 
     const sortFunctions = {
       'time': (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
