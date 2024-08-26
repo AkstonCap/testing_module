@@ -17,7 +17,15 @@ export const listMarket = async (
     };
     const resultInit = await apiCall('market/list/' + path, params);
     // const result = await resultInit.json();
-    const result = [...resultInit.bids, ...resultInit.asks]; // Add this line to combine bids and asks
+    
+    let result = [];
+    if (path === 'executed' || path === 'order') {
+      result = [...resultInit.bids, ...resultInit.asks]; // Add this line to combine bids and asks
+    } else if (path === 'bid') {
+      result = [...resultInit.bids ];
+    } else if (path === 'ask') {
+      result = [...resultInit.asks ];
+    }
 
     console.log('API call result:', result); // Add this line to log the result
 
@@ -34,6 +42,10 @@ export const listMarket = async (
       'all': 0,
     };
 
+    if (!timeFilters.hasOwnProperty(filter)) {
+      throw new Error('Invalid filter value');
+    }
+
     const filteredResult = result.filter((item) => { 
       const itemTime = new Date(item.timestamp).getTime();
       return itemTime > (timeFilters[filter] || 0);
@@ -41,11 +53,15 @@ export const listMarket = async (
 
     const sortFunctions = {
       'time': (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
-      'price': (a, b) => b.price - a.price,
+      'price': (a, b) => (b.contract.amount / b.order.amount) - (a.contract.amount / a.order.amount),
+      'volumeBase': (a, b) => b.contract.amount - a.contract.amount,
+      'volumeOrder': (a, b) => b.order.amount - a.order.amount
     };
     if (asc_desc === 'asc') {
-      sortFunctions.price = (a, b) => a.price - b.price;
+      sortFunctions.price = (a, b) => (a.contract.amount / a.order.amount) - (b.contract.amount / b.order.amount);
       sortFunctions.time = (a, b) => new Date(a.timestamp) - new Date(b.timestamp);
+      sortFunctions.volumeBase = (a, b) => a.contract.amount - b.contract.amount;
+      sortFunctions.volumeOrder = (a, b) => a.order.amount - b.order.amount;
     }
 
     let sortedResult;

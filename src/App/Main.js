@@ -33,6 +33,8 @@ const ButtonContainer = styled.div`
 `;
 
 const DEFAULT_MARKET_PAIR = 'DIST/NXS';
+const DEFAULT_ORDER_TOKEN = 'DIST';
+const DEFAULT_BASE_TOKEN = 'NXS';
 
 export default function Main() {
   const { inputMarket, 
@@ -52,7 +54,13 @@ export default function Main() {
     if (!inputMarket) {
       dispatch(updateInput(DEFAULT_MARKET_PAIR));
     }
-  }, [dispatch, inputMarket]);
+    if (!inputOrderToken) {
+      dispatch(updateInput(DEFAULT_ORDER_TOKEN));
+    }
+    if (!inputBaseToken) {
+      dispatch(updateInput(DEFAULT_BASE_TOKEN));
+    }
+  }, [dispatch, inputMarket, inputOrderToken, inputBaseToken]);
   
   const [lastPrice, setLastPrice] = useState('N/A');
   const [highestBid, setHighestBid] = useState('N/A');
@@ -62,6 +70,7 @@ export default function Main() {
   const [checkingMarket, setCheckingMarket] = useState(false);
 
   const handleRefreshClick = () => {
+    const concatenatedMarket = `${inputOrderToken}/${inputBaseToken}`;
     fetchLastPrice(inputMarket, checkingMarket, 
       setCheckingMarket, setLastPrice, showErrorDialog);
     fetchHighestBid(inputMarket, setHighestBid, showErrorDialog);
@@ -106,11 +115,11 @@ export default function Main() {
       <div className="DEX">
         <FieldSet legend="Nexus DEX">
           <p>
-            <Button onClick={() => viewMarket(inputMarket, 'executed', 10, 'time', '1y')} disabled={checkingMarket}>
+            <Button onClick={() => viewMarket(concatenatedMarket, 'executed', 10, 'time', '1y')} disabled={checkingMarket}>
               View {inputMarket || DEFAULT_MARKET_PAIR} transactions
             </Button>{' '}
             
-            <Button onClick={() => viewMarket(inputMarket, 'order', 10, 'time', '1y')} disabled={checkingMarket}>
+            <Button onClick={() => viewMarket(concatenatedMarket, 'order', 10, 'time', '1y')} disabled={checkingMarket}>
               View {inputMarket || DEFAULT_MARKET_PAIR} orders
             </Button>{' '}
           </p>

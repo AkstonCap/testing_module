@@ -4,6 +4,8 @@ import {
   showSuccessDialog 
 } from 'nexus-module';
 
+const [setCheckingMarket] = useState(false);
+
 export const viewMarket = async (
   marketPair = 'DIST/NXS', 
   path, 
