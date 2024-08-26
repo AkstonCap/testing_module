@@ -110,12 +110,14 @@ export default function Main() {
       <div className="text-center">
         <ButtonContainer>
           <DemoTextField
+            name="orderToken"
             value={inputOrderToken}
             onChange={handleChange}
             placeholder="Type order token here"
           />
           /
           <DemoTextField
+            name="baseToken"
             value={inputBaseToken}
             onChange={handleChange}
             placeholder="Type base token here"
