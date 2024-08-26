@@ -13,9 +13,9 @@ export const fetchLastPrice = async (
     if (checkingMarket) return;
     try {
       setCheckingMarket(true);
-      const pair = inputMarket || DEFAULT_MARKET_PAIR;
+      const pair = inputMarket;
       const result = await listMarket(pair, 'executed', 'time', 'desc', 'all', 5);
-      setLastPrice(result[0]?.price || 'N/A');
+      setLastPrice((result[0]?.order.amount / result[0]?.contract.amount) || 'N/A');
     } catch (error) {
       showErrorDialog({
         message: 'Cannot get last price',

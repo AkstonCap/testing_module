@@ -22,6 +22,7 @@ import { fetchLastPrice } from 'actions/fetchLastPrice';
 import { fetchHighestBid, fetchLowestAsk } from 'actions/fetchFirstOrders';
 import { fetchVolume } from 'actions/fetchVolume';
 import { setMarketPair } from 'actions/setMarketPair';
+import { fetchOrderBook } from 'actions/fetchOrderBook';
 
 const DemoTextField = styled(TextField)({
   maxWidth: 400,
@@ -70,6 +71,9 @@ export default function Main() {
   const [baseTokenVolume, setBaseTokenVolume] = useState('N/A');
   const [checkingMarket, setCheckingMarket] = useState(false);
   const [marketPair, setMarketPairState] = useState('');
+  const [orderBook, setOrderBook] = useState([]);
+  const [orderBookBids, setOrderBookBids] = useState([]);
+  const [orderBookAsks, setOrderBookAsks] = useState([]);
 
   const handleRefreshClick = () => {
     setMarketPair(inputOrderToken, inputBaseToken, setMarketPairState);
@@ -79,6 +83,18 @@ export default function Main() {
     fetchLowestAsk(inputMarket, setLowestAsk, showErrorDialog);
     fetchVolume(inputMarket, checkingMarket, setCheckingMarket, 
       setOrderTokenVolume, setBaseTokenVolume, showErrorDialog, '1y');
+    fetchOrderBook(inputMarket, checkingMarket, setCheckingMarket, 
+      setOrderBook, setOrderBookBids, setOrderBookAsks, showErrorDialog);
+  };
+
+  const renderTableRows = (data) => {
+    return data.slice(0, 5).map((item, index) => (
+      <tr key={index}>
+        <td>{(item.order.amount / item.contract.amount)}</td>
+        <td>{item.order.amount}</td>
+        <td>{item.contract.amount}</td>
+      </tr>
+    ));
   };
 
   const gridStyle = {
@@ -137,6 +153,30 @@ export default function Main() {
             <p>1yr Volume: {orderTokenVolume} {inputOrderToken}</p>
            
           </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Price</th>
+                <th>Token amount</th>
+                <th>Base token amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {renderTableRows(orderBookBids)}
+            </tbody>
+          </table>
+          <table>
+            <thead>
+              <tr>
+                <th>Price</th>
+                <th>Token amount</th>
+                <th>Base token amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {renderTableRows(orderBookAsks)}
+            </tbody>
+          </table>
         </FieldSet>
       </div>
     </Panel>
