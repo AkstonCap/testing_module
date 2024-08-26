@@ -1,18 +1,17 @@
-import { useState } from 'react';
 import { 
   apiCall, 
   showErrorDialog,
   showSuccessDialog 
 } from 'nexus-module';
 
-const [setCheckingMarket] = useState(false);
-
 export const viewMarket = async (
   marketPair = 'DIST/NXS', 
   path, 
   numOfRes = 10, 
   sort = 'time', 
-  filter = '1d' ) => {
+  filter = '1d',
+  setCheckingMarket
+) => {
     try {
       setCheckingMarket(true);
       const params = { 
