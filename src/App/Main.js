@@ -21,7 +21,7 @@ import { viewMarket } from 'actions/viewMarket';
 import { fetchLastPrice } from 'actions/fetchLastPrice';
 import { fetchHighestBid, fetchLowestAsk } from 'actions/fetchFirstOrders';
 import { fetchVolume } from 'actions/fetchVolume';
-import { setMarketPair } from 'actions/setMarketPair';
+import { setMarketPair } from 'actions/setMarket';
 import { fetchOrderBook } from 'actions/fetchOrderBook';
 
 const DemoTextField = styled(TextField)({
