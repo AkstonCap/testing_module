@@ -1,4 +1,8 @@
-export const setMarketPair = function (orderToken, baseToken) => {
-    const marketPair = orderToken + "/" + baseToken;
-    return marketPair;
+export const setMarketPair = (
+    orderToken, 
+    baseToken,
+    setMarketPairState 
+) => {
+    const concatenatedMarket = `${orderToken}/${baseToken}`;
+    setMarketPairState(concatenatedMarket);
 }

@@ -21,6 +21,7 @@ import { viewMarket } from 'actions/viewMarket';
 import { fetchLastPrice } from 'actions/fetchLastPrice';
 import { fetchHighestBid, fetchLowestAsk } from 'actions/fetchFirstOrders';
 import { fetchVolume } from 'actions/fetchVolume';
+import { setMarketPair } from 'actions/setMarketPair';
 
 const DemoTextField = styled(TextField)({
   maxWidth: 400,
@@ -71,7 +72,7 @@ export default function Main() {
   const [marketPair, setMarketPairState] = useState('');
 
   const handleRefreshClick = () => {
-    setMarketPairState(`${inputOrderToken}/${inputBaseToken}`);
+    setMarketPair(inputOrderToken, inputBaseToken, setMarketPairState);
     fetchLastPrice(inputMarket, checkingMarket, 
       setCheckingMarket, setLastPrice, showErrorDialog);
     fetchHighestBid(inputMarket, setHighestBid, showErrorDialog);
