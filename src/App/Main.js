@@ -68,9 +68,10 @@ export default function Main() {
   const [orderTokenVolume, setOrderTokenVolume] = useState('N/A');
   const [baseTokenVolume, setBaseTokenVolume] = useState('N/A');
   const [checkingMarket, setCheckingMarket] = useState(false);
+  const [marketPair, setMarketPairState] = useState('');
 
   const handleRefreshClick = () => {
-    const concatenatedMarket = `${inputOrderToken}/${inputBaseToken}`;
+    setMarketPairState(`${inputOrderToken}/${inputBaseToken}`);
     fetchLastPrice(inputMarket, checkingMarket, 
       setCheckingMarket, setLastPrice, showErrorDialog);
     fetchHighestBid(inputMarket, setHighestBid, showErrorDialog);
@@ -87,7 +88,7 @@ export default function Main() {
   };
 
   return (
-    <Panel title={`${inputMarket} Market`} icon={{ url: 'react.svg', id: 'icon' }}>
+    <Panel title={"DEX Module"} icon={{ url: 'react.svg', id: 'icon' }}>
       <div className="text-center">
         <ButtonContainer>
           <DemoTextField
@@ -113,13 +114,13 @@ export default function Main() {
       </div>
 
       <div className="DEX">
-        <FieldSet legend="Nexus DEX">
+        <FieldSet legend={`${marketPair}`}>
           <p>
-            <Button onClick={() => viewMarket(concatenatedMarket, 'executed', 10, 'time', '1y')} disabled={checkingMarket}>
+            <Button onClick={() => viewMarket(marketPair, 'executed', 10, 'time', '1y')} disabled={checkingMarket}>
               View {inputMarket || DEFAULT_MARKET_PAIR} transactions
             </Button>{' '}
             
-            <Button onClick={() => viewMarket(concatenatedMarket, 'order', 10, 'time', '1y')} disabled={checkingMarket}>
+            <Button onClick={() => viewMarket(marketPair, 'order', 10, 'time', '1y')} disabled={checkingMarket}>
               View {inputMarket || DEFAULT_MARKET_PAIR} orders
             </Button>{' '}
           </p>
@@ -135,9 +136,6 @@ export default function Main() {
             <p>1yr Volume: {orderTokenVolume} {inputOrderToken}</p>
            
           </div>
-          <p>
-            {' '}
-          </p>
         </FieldSet>
       </div>
     </Panel>
