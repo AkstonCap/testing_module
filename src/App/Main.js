@@ -131,11 +131,15 @@ export default function Main() {
       <div className="DEX">
         <FieldSet legend={`${marketPair}`}>
           <p>
-            <Button onClick={() => viewMarket(marketPair, 'executed', 10, 'time', '1y', setCheckingMarket)} disabled={checkingMarket}>
+            <Button onClick={() => viewMarket(
+              marketPair, 'executed', 10, 'time', '1y', setCheckingMarket
+              )} disabled={checkingMarket}>
               View {inputMarket || DEFAULT_MARKET_PAIR} transactions
             </Button>{' '}
             
-            <Button onClick={() => viewMarket(marketPair, 'order', 10, 'time', '1y', setCheckingMarket)} disabled={checkingMarket}>
+            <Button onClick={() => viewMarket(
+              marketPair, 'order', 10, 'time', '1y', setCheckingMarket
+              )} disabled={checkingMarket}>
               View {inputMarket || DEFAULT_MARKET_PAIR} orders
             </Button>{' '}
           </p>

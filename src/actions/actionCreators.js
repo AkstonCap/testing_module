@@ -24,21 +24,46 @@ export const updateInputBaseToken = (inputBaseToken) => ({
 });
 
 export const setLastPrice = (price) => ({
-  type: 'SET_LAST_PRICE', 
+  type: TYPE.SET_LAST_PRICE, 
   payload: price 
 });
 
 export const setHighestBid = (bid) => ({ 
-  type: 'SET_HIGHEST_BID', payload: bid });
+  type: TYPE.SET_HIGHEST_BID, 
+  payload: bid });
 
 export const setLowestAsk = (ask) => ({ 
-  type: 'SET_LOWEST_ASK', payload: ask });
+  type: TYPE.SET_LOWEST_ASK, 
+  payload: ask });
 
-export const setBaseTokenVolume = (volume) => ({ 
-  type: 'SET_BASE_TOKEN_VOLUME', payload: volume });
-export const setOrderTokenVolume = (volume) => ({ 
-  type: 'SET_ORDER_TOKEN_VOLUME', payload: volume });
-export const setInputBaseToken = (token) => ({ 
-  type: 'SET_INPUT_BASE_TOKEN', payload: token });
-export const setInputOrderToken = (token) => ({ 
-  type: 'SET_INPUT_ORDER_TOKEN', payload: token });
+  export const setBaseTokenVolume = (volume) => ({ 
+    type: TYPE.SET_BASE_TOKEN_VOLUME, payload: volume 
+  });
+  
+  export const setOrderTokenVolume = (volume) => ({ 
+    type: TYPE.SET_ORDER_TOKEN_VOLUME, payload: volume 
+  });
+  
+  export const setInputBaseToken = (token) => ({ 
+    type: TYPE.SET_INPUT_BASE_TOKEN, payload: token 
+  });
+  
+  export const setInputOrderToken = (token) => ({ 
+    type: TYPE.SET_INPUT_ORDER_TOKEN, payload: token 
+  });
+  
+  export const setMarketPair = (marketPair) => ({
+    type: TYPE.SET_MARKET_PAIR,
+    payload: marketPair,
+  });
+  
+  export const setOrderBook = (orderBook) => ({
+    type: TYPE.SET_ORDER_BOOK,
+    payload: orderBook,
+  });
+  
+  export const setOrderBookBids = (orderBookBids) => ({
+    type: TYPE.SET_ORDER_BOOK_BIDS,
+    payload: orderBookBids,
+  });
+  
