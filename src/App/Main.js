@@ -134,13 +134,13 @@ export default function Main() {
             <Button onClick={() => viewMarket(
               marketPair, 'executed', 10, 'time', '1y', setCheckingMarket
               )} disabled={checkingMarket}>
-              View {inputMarket || DEFAULT_MARKET_PAIR} transactions
+              View {marketPair} transactions
             </Button>{' '}
             
             <Button onClick={() => viewMarket(
               marketPair, 'order', 10, 'time', '1y', setCheckingMarket
               )} disabled={checkingMarket}>
-              View {inputMarket || DEFAULT_MARKET_PAIR} orders
+              View {marketPair} orders
             </Button>{' '}
           </p>
           <div style={gridStyle}>
