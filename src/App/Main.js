@@ -23,7 +23,7 @@ import { fetchVolume } from 'actions/fetchVolume';
 import { fetchOrderBook } from 'actions/fetchOrderBook';
 
 const DemoTextField = styled(TextField)({
-  maxWidth: 400,
+  maxWidth: 300,
 });
 
 const ButtonContainer = styled.div`
@@ -161,7 +161,7 @@ export default function Main() {
             <thead>
               <tr>
                 <th>Price</th>
-                <th>Token amount</th>
+                <th>Order token amount</th>
                 <th>Base token amount</th>
               </tr>
             </thead>
@@ -173,7 +173,7 @@ export default function Main() {
             <thead>
               <tr>
                 <th>Price</th>
-                <th>Token amount</th>
+                <th>Order token amount</th>
                 <th>Base token amount</th>
               </tr>
             </thead>
