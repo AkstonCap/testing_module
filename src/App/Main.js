@@ -15,13 +15,11 @@ import {
 } from 'nexus-module';
 
 import { updateInputOrderToken, updateInputBaseToken } from 'actions/actionCreators';
-import { listMarket } from 'actions/listMarket';
 import RefreshButton from './RefreshButton';
 import { viewMarket } from 'actions/viewMarket';
 import { fetchLastPrice } from 'actions/fetchLastPrice';
 import { fetchHighestBid, fetchLowestAsk } from 'actions/fetchFirstOrders';
 import { fetchVolume } from 'actions/fetchVolume';
-import { setMarketPair } from 'actions/setMarket';
 import { fetchOrderBook } from 'actions/fetchOrderBook';
 
 const DemoTextField = styled(TextField)({
@@ -34,7 +32,6 @@ const ButtonContainer = styled.div`
   gap: 10px; /* Adjust the gap as needed */
 `;
 
-const DEFAULT_MARKET_PAIR = 'DIST/NXS';
 const DEFAULT_ORDER_TOKEN = 'DIST';
 const DEFAULT_BASE_TOKEN = 'NXS';
 
