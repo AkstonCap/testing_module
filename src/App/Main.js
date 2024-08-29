@@ -68,6 +68,8 @@ export default function Main() {
   const [lastPrice, setLastPrice] = useState('N/A');
   const [highestBid, setHighestBid] = useState('N/A');
   const [lowestAsk, setLowestAsk] = useState('N/A');
+  const [baseToken, setBaseToken] = useState('');
+  const [orderToken, setOrderToken] = useState('');
   const [orderTokenVolume, setOrderTokenVolume] = useState('N/A');
   const [baseTokenVolume, setBaseTokenVolume] = useState('N/A');
   const [checkingMarket, setCheckingMarket] = useState(false);
@@ -77,7 +79,10 @@ export default function Main() {
   const [orderBookAsks, setOrderBookAsks] = useState([]);
 
   const handleRefreshClick = () => {
-    setMarketPair(inputOrderToken, inputBaseToken, setMarketPairState);
+    setOrderToken(inputOrderToken);
+    setBaseToken(inputBaseToken);
+    const newMarketPair = `${orderToken}/${baseToken}`;
+    setMarketPairState(newMarketPair);
     fetchLastPrice(marketPair, checkingMarket, 
       setCheckingMarket, setLastPrice, showErrorDialog);
     fetchHighestBid(marketPair, setHighestBid, showErrorDialog);
@@ -144,15 +149,15 @@ export default function Main() {
             </Button>{' '}
           </p>
           <div style={gridStyle}>
-            <p>Last Price: {lastPrice} {inputBaseToken}</p>
+            <p>Last Price: {lastPrice} {baseToken}</p>
             
-            <p>Bid: {highestBid} {inputBaseToken}</p>
+            <p>Bid: {highestBid} {baseToken}</p>
             
-            <p>Ask: {lowestAsk} {inputBaseToken}</p>
+            <p>Ask: {lowestAsk} {baseToken}</p>
             
-            <p>1yr Volume: {baseTokenVolume} {inputBaseToken}</p>
+            <p>1yr Volume: {baseTokenVolume} {baseToken}</p>
            
-            <p>1yr Volume: {orderTokenVolume} {inputOrderToken}</p>
+            <p>1yr Volume: {orderTokenVolume} {orderToken}</p>
            
           </div>
           <table>
