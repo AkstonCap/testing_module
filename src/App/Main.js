@@ -21,6 +21,7 @@ import { fetchLastPrice } from 'actions/fetchLastPrice';
 import { fetchHighestBid, fetchLowestAsk } from 'actions/fetchFirstOrders';
 import { fetchVolume } from 'actions/fetchVolume';
 import { fetchOrderBook } from 'actions/fetchOrderBook';
+import { setMarketPair } from 'actions/setMarketPair';
 
 const DemoTextField = styled(TextField)({
   maxWidth: 300,
@@ -56,9 +57,19 @@ export default function Main() {
   useEffect(() => {
     if (!inputOrderToken) {
       dispatch(updateInputOrderToken(DEFAULT_ORDER_TOKEN));
+      marketPair = setMarketPair(
+        DEFAULT_ORDER_TOKEN, 
+        DEFAULT_BASE_TOKEN,
+        setMarketPairState 
+      );
     }
     if (!inputBaseToken) {
       dispatch(updateInputBaseToken(DEFAULT_BASE_TOKEN));
+      marketPair = setMarketPair(
+        DEFAULT_ORDER_TOKEN, 
+        DEFAULT_BASE_TOKEN,
+        setMarketPairState 
+      );
     }
   }, [dispatch, inputOrderToken, inputBaseToken]);
   
