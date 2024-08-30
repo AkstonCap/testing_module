@@ -68,19 +68,6 @@ export default function Main() {
   const [orderBookBids, setOrderBookBids] = useState([]);
   const [orderBookAsks, setOrderBookAsks] = useState([]);
 
-  /*
-  useEffect(() => {
-    if (!inputOrderToken) {
-      dispatch(updateInputOrderToken(DEFAULT_ORDER_TOKEN));
-      setMarketPairState(DEFAULT_MARKET_PAIR);
-    }
-    if (!inputBaseToken) {
-      dispatch(updateInputBaseToken(DEFAULT_BASE_TOKEN));
-      setMarketPairState(DEFAULT_MARKET_PAIR);
-    }
-  }, [dispatch, inputOrderToken, inputBaseToken]);
-  */
-
   const handleRefreshClick = () => {
     if (!inputOrderToken) {
       setOrderToken(DEFAULT_ORDER_TOKEN);
