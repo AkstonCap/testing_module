@@ -17,12 +17,9 @@ export const fetchLastPrice = async (
       const pair = inputMarket;
       const result = await listMarket(pair, 'executed', 'time', 'desc', 'all', 5);
       
-      if (result.length > 0) {
-        const lastPrice = (result[0].order.amount * MULTIPLIER) / result[0].contract.amount;
-        setLastPrice(lastPrice);
-    } else {
-        setLastPrice('N/A');
-    }
+      const lastPrice = (result[0].order.amount * MULTIPLIER) / result[0].contract.amount;
+      setLastPrice(lastPrice);
+    
     } catch (error) {
       showErrorDialog({
         message: 'Cannot get last price',

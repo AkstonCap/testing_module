@@ -1,6 +1,8 @@
 import { setLowestAsk } from './actionCreators';
 import { listMarket, DEFAULT_MARKET_PAIR } from './listMarket';
 
+const MULTIPLIER = 1e6;
+
 export const fetchHighestBid = async (
   inputMarket = DEFAULT_MARKET_PAIR, 
   checkingMarket, 
@@ -12,8 +14,12 @@ export const fetchHighestBid = async (
     try {
       setCheckingMarket(true);
       const pair = inputMarket;
-      const bids = await listMarket(pair, 'bid', 'price', 'desc', 'all', 5);
-      setHighestBid((bids[0]?.order.amount / bids[0]?.contract.amount ) || 'N/A');
+      const result = await listMarket(pair, 'bid', 'price', 'desc', 'all', 5);
+      
+      const bids = [...result.bids];
+      const topBid = (bids[0]?.order.amount * MULTIPLIER) / bids[0]?.contract.amount;
+      setHighestBid(topBid || 'N/A');
+    
     } catch (error) {
       showErrorDialog({
         message: 'Cannot get bids',
@@ -35,8 +41,12 @@ export const fetchLowestAsk = async (
     try {
       setCheckingMarket(true);
       const pair = inputMarket;
-      const asks = await listMarket(pair, 'ask', 'price', 'asc', 'all', 5);
-      setLowestAsk((asks[0]?.order.amount / asks[0]?.contract.amount ) || 'N/A');
+      const result = await listMarket(pair, 'ask', 'price', 'asc', 'all', 5);
+      
+      const asks = [...result.asks];
+      const topAsk = (asks[0]?.order.amount * MULTIPLIER) / asks[0]?.contract.amount;
+      setLowestAsk( topAsk || 'N/A');
+      
     } catch (error) {
       showErrorDialog({
         message: 'Cannot get ask',
