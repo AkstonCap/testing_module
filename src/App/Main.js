@@ -21,7 +21,7 @@ import { fetchLastPrice } from 'actions/fetchLastPrice';
 import { fetchHighestBid, fetchLowestAsk } from 'actions/fetchFirstOrders';
 import { fetchVolume } from 'actions/fetchVolume';
 import { fetchOrderBook } from 'actions/fetchOrderBook';
-import { setMarketPair } from 'actions/setMarketPair';
+import { setMarketPair } from 'actions/setMarket';
 
 const DemoTextField = styled(TextField)({
   maxWidth: 300,
