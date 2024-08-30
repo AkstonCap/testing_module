@@ -97,6 +97,7 @@ export default function Main() {
     }
     const newMarketPair = `${orderToken}/${baseToken}`;
     setMarketPairState(newMarketPair);
+  };
 
   const renderTableRows = (data) => {
     return data.slice(0, 5).map((item, index) => (
