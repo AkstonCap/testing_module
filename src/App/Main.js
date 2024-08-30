@@ -33,6 +33,7 @@ const ButtonContainer = styled.div`
   gap: 10px; /* Adjust the gap as needed */
 `;
 
+const DEFAULT_MARKET_PAIR = 'DIST/NXS';
 const DEFAULT_ORDER_TOKEN = 'DIST';
 const DEFAULT_BASE_TOKEN = 'NXS';
 
@@ -47,50 +48,55 @@ export default function Main() {
   const dispatch = useDispatch();
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
-  if (name === 'orderToken') {
+  if (name === 'orderTokenField') {
     dispatch(updateInputOrderToken(value));
-  } else if (name === 'baseToken') {
+  } else if (name === 'baseTokenField') {
     dispatch(updateInputBaseToken(value));
   }
   }, [dispatch]);
 
-  useEffect(() => {
-    if (!inputOrderToken) {
-      dispatch(updateInputOrderToken(DEFAULT_ORDER_TOKEN));
-      marketPair = setMarketPair(
-        DEFAULT_ORDER_TOKEN, 
-        DEFAULT_BASE_TOKEN,
-        setMarketPairState 
-      );
-    }
-    if (!inputBaseToken) {
-      dispatch(updateInputBaseToken(DEFAULT_BASE_TOKEN));
-      marketPair = setMarketPair(
-        DEFAULT_ORDER_TOKEN, 
-        DEFAULT_BASE_TOKEN,
-        setMarketPairState 
-      );
-    }
-  }, [dispatch, inputOrderToken, inputBaseToken]);
-  
   const [lastPrice, setLastPrice] = useState('N/A');
   const [highestBid, setHighestBid] = useState('N/A');
   const [lowestAsk, setLowestAsk] = useState('N/A');
-  const [baseToken, setBaseToken] = useState('');
-  const [orderToken, setOrderToken] = useState('');
+  const [baseToken, setBaseToken] = useState(DEFAULT_BASE_TOKEN);
+  const [orderToken, setOrderToken] = useState(DEFAULT_ORDER_TOKEN);
   const [orderTokenVolume, setOrderTokenVolume] = useState('N/A');
   const [baseTokenVolume, setBaseTokenVolume] = useState('N/A');
   const [checkingMarket, setCheckingMarket] = useState(false);
-  const [marketPair, setMarketPairState] = useState('');
+  const [marketPair, setMarketPairState] = useState(DEFAULT_MARKET_PAIR);
   const [orderBook, setOrderBook] = useState([]);
   const [orderBookBids, setOrderBookBids] = useState([]);
   const [orderBookAsks, setOrderBookAsks] = useState([]);
 
+  /*
+  useEffect(() => {
+    if (!inputOrderToken) {
+      dispatch(updateInputOrderToken(DEFAULT_ORDER_TOKEN));
+      setMarketPairState(DEFAULT_MARKET_PAIR);
+    }
+    if (!inputBaseToken) {
+      dispatch(updateInputBaseToken(DEFAULT_BASE_TOKEN));
+      setMarketPairState(DEFAULT_MARKET_PAIR);
+    }
+  }, [dispatch, inputOrderToken, inputBaseToken]);
+  */
+
   const handleRefreshClick = () => {
-    setOrderToken(inputOrderToken);
-    setBaseToken(inputBaseToken);
+    if (!inputOrderToken) {
+      setOrderToken(DEFAULT_ORDER_TOKEN);
+      setMarketPairState(DEFAULT_MARKET_PAIR);
+    } else {
+      setOrderToken(inputOrderToken);
+    }
+    if (!inputBaseToken) {
+      setBaseToken(DEFAULT_BASE_TOKEN);
+      setMarketPairState(DEFAULT_MARKET_PAIR);
+    } else {
+      setBaseToken(inputBaseToken);
+    }
     const newMarketPair = `${orderToken}/${baseToken}`;
     setMarketPairState(newMarketPair);
+
     fetchLastPrice(marketPair, checkingMarket, 
       setCheckingMarket, setLastPrice, showErrorDialog);
     fetchHighestBid(marketPair, setHighestBid, showErrorDialog);
@@ -123,14 +129,14 @@ export default function Main() {
       <div className="text-center">
         <ButtonContainer>
           <DemoTextField
-            name="orderToken"
+            name="orderTokenField"
             value={inputOrderToken}
             onChange={handleChange}
             placeholder="Type order token here"
           />
           /
           <DemoTextField
-            name="baseToken"
+            name="baseTokenField"
             value={inputBaseToken}
             onChange={handleChange}
             placeholder="Type base token here"
