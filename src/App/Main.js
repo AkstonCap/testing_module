@@ -124,6 +124,13 @@ export default function Main() {
     gap: '10px' // Adjust the gap as needed
   };
 
+  const gridStyleOrderbook = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gridTemplateRows: 'repeat(1, auto)',
+    gap: '10px' // Adjust the gap as needed
+  };
+
   return (
     <Panel title={"DEX Module"} icon={{ url: 'react.svg', id: 'icon' }}>
       <div className="text-center">
@@ -174,30 +181,34 @@ export default function Main() {
             <p>1yr Volume: {orderTokenVolume} {orderToken}</p>
            
           </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Price</th>
-                <th>Order token amount</th>
-                <th>Base token amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {renderTableRows(orderBookBids)}
-            </tbody>
-          </table>
-          <table>
-            <thead>
-              <tr>
-                <th>Price</th>
-                <th>Order token amount</th>
-                <th>Base token amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {renderTableRows(orderBookAsks)}
-            </tbody>
-          </table>
+          <div style={gridStyleOrderbook}>
+            Bids
+            <table>
+              <thead>
+                <tr>
+                  <th>Price</th>
+                  <th>Order token amount</th>
+                  <th>Base token amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {renderTableRows(orderBookBids)}
+              </tbody>
+            </table>
+            Asks
+            <table>
+              <thead>
+                <tr>
+                  <th>Price</th>
+                  <th>Order token amount</th>
+                  <th>Base token amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {renderTableRows(orderBookAsks)}
+              </tbody>
+            </table>
+          </div>
         </FieldSet>
       </div>
     </Panel>
