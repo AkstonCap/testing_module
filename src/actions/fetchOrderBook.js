@@ -16,8 +16,8 @@ export const fetchOrderBook = async (
         const result = await listMarket(pair, 'order', 'time', 'desc', 'all', 0);
         setOrderBook([...result.bids, ...result.asks]);
         setOrderBookBids([...result.bids]);
-        const asks = await listMarket(pair, 'asks', 'time', 'asc', 'all', 0);
-        setOrderBookAsks([...asks]);
+        const result_asks = await listMarket(pair, 'asks', 'time', 'asc', 'all', 0);
+        setOrderBookAsks([...result_asks.asks]);
         } catch (error) {
         showErrorDialog({
             message: 'Cannot get order book',
