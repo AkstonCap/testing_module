@@ -9,7 +9,7 @@ export const viewMarket = async (
   path, 
   numOfRes = 10, 
   sort = 'time', 
-  filter = '1d',
+  timeFilter = '1y',
   setCheckingMarket
 ) => {
     try {
@@ -30,7 +30,7 @@ export const viewMarket = async (
       const filtering = {
         where: {
           timestamp: {
-            gt: timeFilters[filter] || 0,
+            gt: timeFilters[timeFilter] || 0,
           },
         },
       }

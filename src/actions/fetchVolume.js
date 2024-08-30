@@ -13,9 +13,9 @@ export const fetchVolume = async (
     try {
       setCheckingMarket(true);
       const pair = inputMarket || DEFAULT_MARKET_PAIR;
-      const dataInit = await listMarket(pair, 'executed', 'time', 'desc', timeFilter, 0);
+      const data = await listMarket(pair, 'executed', 'time', 'desc', timeFilter, 0);
 
-      const data = [...dataInit.bids, ...dataInit.asks]; // Adjust this if data structure is different
+      //const data = [...dataInit.bids, ...dataInit.asks]; // Adjust this if data structure is different
 
       let orderTokenVolume = 0;
       let baseTokenVolume = 0;

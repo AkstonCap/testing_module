@@ -16,8 +16,8 @@ export const fetchHighestBid = async (
       const pair = inputMarket;
       const result = await listMarket(pair, 'bid', 'price', 'desc', 'all', 5);
       
-      const bids = [...result.bids];
-      const topBid = (bids[0]?.order.amount * MULTIPLIER) / bids[0]?.contract.amount;
+      //const bids = [...result.bids];
+      const topBid = (result[0]?.order.amount * MULTIPLIER) / bids[0]?.contract.amount;
       setHighestBid(topBid || 'N/A');
     
     } catch (error) {
@@ -43,10 +43,10 @@ export const fetchLowestAsk = async (
       const pair = inputMarket;
       const result = await listMarket(pair, 'ask', 'price', 'asc', 'all', 5);
       
-      const asks = [...result.asks];
-      const topAsk = (asks[0]?.order.amount * MULTIPLIER) / asks[0]?.contract.amount;
+      //const asks = [...result.asks];
+      const topAsk = (result[0]?.order.amount * MULTIPLIER) / asks[0]?.contract.amount;
       setLowestAsk( topAsk || 'N/A');
-      
+
     } catch (error) {
       showErrorDialog({
         message: 'Cannot get ask',
