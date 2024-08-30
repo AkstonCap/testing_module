@@ -67,6 +67,9 @@ export default function Main() {
   const [orderBook, setOrderBook] = useState([]);
   const [orderBookBids, setOrderBookBids] = useState([]);
   const [orderBookAsks, setOrderBookAsks] = useState([]);
+  const [executedBids, setExecutedBids] = useState([]);
+  const [executedAsks, setExecutedAsks] = useState([]);
+  const [executedOrders, setExecutedOrders] = useState([]);
 
   useEffect(() => {
     fetchLastPrice(marketPair, checkingMarket, 
@@ -94,17 +97,7 @@ export default function Main() {
     }
     const newMarketPair = `${orderToken}/${baseToken}`;
     setMarketPairState(newMarketPair);
-/*
-    fetchLastPrice(marketPair, checkingMarket, 
-      setCheckingMarket, setLastPrice, showErrorDialog);
-    fetchHighestBid(marketPair, setHighestBid, showErrorDialog);
-    fetchLowestAsk(marketPair, setLowestAsk, showErrorDialog);
-    fetchVolume(marketPair, checkingMarket, setCheckingMarket, 
-      setOrderTokenVolume, setBaseTokenVolume, showErrorDialog, '1y');
-    fetchOrderBook(marketPair, checkingMarket, setCheckingMarket, 
-      setOrderBook, setOrderBookBids, setOrderBookAsks, showErrorDialog);
-  };
-*/
+
   const renderTableRows = (data) => {
     return data.slice(0, 5).map((item, index) => (
       <tr key={index}>
