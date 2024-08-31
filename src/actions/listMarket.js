@@ -8,8 +8,9 @@ export const listMarket = async (
   path,  
   sort = 'time',
   asc_desc = 'desc', 
-  filter = 'all',
-  numOfRes = 0
+  timeFilter = 'all',
+  numOfRes = 0,
+  typeFilter
 ) => {
   try {
     const params = {
@@ -25,14 +26,17 @@ export const listMarket = async (
       'all': 0,
     };
 
-    if (!timeFilters.hasOwnProperty(filter)) {
+    if (!timeFilters.hasOwnProperty(timeFilter)) {
       throw new Error('Invalid filter value');
     }
 
     const filtering = {
       where: {
         timestamp: {
-          gt: timeFilters[filter] || 0,
+          gt: timeFilters[timeFilter] || 0,
+        },
+        type: {
+          eq: typeFilter,
         },
       },
     }

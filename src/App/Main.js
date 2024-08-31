@@ -83,19 +83,13 @@ export default function Main() {
   }, [marketPair]);
 
   const handleRefreshClick = () => {
-    if (!inputOrderToken) {
-      setOrderToken(DEFAULT_ORDER_TOKEN);
-      setMarketPairState(DEFAULT_MARKET_PAIR);
-    } else {
-      setOrderToken(inputOrderToken);
-    }
-    if (!inputBaseToken) {
-      setBaseToken(DEFAULT_BASE_TOKEN);
-      setMarketPairState(DEFAULT_MARKET_PAIR);
-    } else {
-      setBaseToken(inputBaseToken);
-    }
-    const newMarketPair = `${orderToken}/${baseToken}`;
+    let newOrderToken = inputOrderToken || DEFAULT_ORDER_TOKEN;
+    let newBaseToken = inputBaseToken || DEFAULT_BASE_TOKEN;
+  
+    setOrderToken(newOrderToken);
+    setBaseToken(newBaseToken);
+    
+    const newMarketPair = `${newOrderToken}/${newBaseToken}`;
     setMarketPairState(newMarketPair);
   };
 

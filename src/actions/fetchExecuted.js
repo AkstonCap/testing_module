@@ -4,8 +4,9 @@ export const fetchVolume = async (
   inputMarket = DEFAULT_MARKET_PAIR, 
   checkingMarket, 
   setCheckingMarket, 
-  setOrderTokenVolume,
-  setBaseTokenVolume, 
+  setExecutedOrders,
+  setExecutedBids,
+  setExecutedAsks, 
   showErrorDialog,
   timeFilter = '1d'
 ) => {
@@ -17,15 +18,7 @@ export const fetchVolume = async (
 
       //const data = [...dataInit.bids, ...dataInit.asks]; // Adjust this if data structure is different
 
-      let orderTokenVolume = 0;
-      let baseTokenVolume = 0;
-      data.forEach((item) => {
-        orderTokenVolume += item.order.amount;
-        baseTokenVolume += item.contract.amount; // Adjust this if base token volume calculation is different
-      });
-
-      setOrderTokenVolume(orderTokenVolume);
-      setBaseTokenVolume(baseTokenVolume);
+      setExecutedOrders([...data.bids, ...data.asks]);
 
     } catch (error) {
       showErrorDialog({
