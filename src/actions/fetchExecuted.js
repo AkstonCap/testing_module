@@ -1,6 +1,6 @@
 import { listMarket, DEFAULT_MARKET_PAIR } from './listMarket';
 
-export const fetchVolume = async (
+export const fetchExecuted = async (
   inputMarket = DEFAULT_MARKET_PAIR, 
   checkingMarket, 
   setCheckingMarket, 
@@ -19,10 +19,12 @@ export const fetchVolume = async (
       //const data = [...dataInit.bids, ...dataInit.asks]; // Adjust this if data structure is different
 
       setExecutedOrders([...data.bids, ...data.asks]);
+      setExecutedBids([...data.bids]);
+      setExecutedAsks([...data.asks]);
 
     } catch (error) {
       showErrorDialog({
-        message: 'Cannot get volume',
+        message: 'Cannot get transactions',
         note: error?.message || 'Unknown error',
       });
     } finally {

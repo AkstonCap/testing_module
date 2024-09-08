@@ -21,6 +21,7 @@ import { fetchLastPrice } from 'actions/fetchLastPrice';
 import { fetchHighestBid, fetchLowestAsk } from 'actions/fetchFirstOrders';
 import { fetchVolume } from 'actions/fetchVolume';
 import { fetchOrderBook } from 'actions/fetchOrderBook';
+import { fetchExecuted } from 'actions/fetchExecuted';
 import { setMarketPair } from 'actions/setMarket';
 
 const DemoTextField = styled(TextField)({
@@ -80,6 +81,8 @@ export default function Main() {
       setOrderTokenVolume, setBaseTokenVolume, showErrorDialog, '1y');
     fetchOrderBook(marketPair, checkingMarket, setCheckingMarket, 
       setOrderBook, setOrderBookBids, setOrderBookAsks, showErrorDialog);
+    fetchExecuted(marketPair, checkingMarket, setCheckingMarket, 
+      setExecutedOrders, setExecutedBids, setExecutedAsks, showErrorDialog, '1y');
   }, [marketPair]);
 
   const handleRefreshClick = () => {
@@ -168,6 +171,7 @@ export default function Main() {
            
           </div>
           <div style={gridStyleOrderbook}>
+            <p>
             Bids
             <table>
               <thead>
@@ -181,6 +185,8 @@ export default function Main() {
                 {renderTableRows(orderBookBids)}
               </tbody>
             </table>
+            </p>
+            <p>
             Asks
             <table>
               <thead>
@@ -194,6 +200,39 @@ export default function Main() {
                 {renderTableRows(orderBookAsks)}
               </tbody>
             </table>
+            </p>
+          </div>
+          <div style={gridStyleOrderbook}>
+            <p>
+            Bids
+            <table>
+              <thead>
+                <tr>
+                  <th>Price</th>
+                  <th>Order token amount</th>
+                  <th>Base token amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {renderTableRows(executedBids)}
+              </tbody>
+            </table>
+            </p>
+            <p>
+            Asks
+            <table>
+              <thead>
+                <tr>
+                  <th>Price</th>
+                  <th>Order token amount</th>
+                  <th>Base token amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {renderTableRows(executedAsks)}
+              </tbody>
+            </table>
+            </p>
           </div>
         </FieldSet>
       </div>
